@@ -1,0 +1,8 @@
+nltk
+multipart
+uvicorn
+gunicorn 
+fastapi 
+pydantic 
+scikit-learn  
+collection
