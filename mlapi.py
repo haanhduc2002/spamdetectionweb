@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Response
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from typing import Annotated
 from fileinput import filename
@@ -18,8 +19,10 @@ from sklearn.svm import SVC
 from sklearn.feature_extraction.text import CountVectorizer
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 BASE_PATH = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory= str(BASE_PATH / "template"))
+
 
 with open('model\saved_model.pkl', "rb") as f:
     model_import, cv_import = pickle.load(f)
