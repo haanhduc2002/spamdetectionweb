@@ -2,10 +2,11 @@ from fastapi import FastAPI, APIRouter, HTTPException, Request, Form, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 from fileinput import filename
 import pickle
 import nltk
+import os
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -23,8 +24,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 BASE_PATH = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory= str(BASE_PATH / "template"))
 
-
-with open('model\saved_model.pkl', "rb") as f:
+path = os.path.join('model', 'saved_model.pkl')
+with open(path, "rb") as f:
     model_import, cv_import = pickle.load(f)
 
 async def handle_message(message): 
@@ -49,7 +50,7 @@ async def hello(request: Request):
     return templates.TemplateResponse('index.html',context = {'request': request,'content': "Please enter your email content", 'result': " "},)
 
 @app.post('/form')
-async def spam_identification(request: Request ,message: str = Form(...)):
+async def spam_identification(request: Request ,message: Optional[str] = Form(None)):
     answer = ''
     try:
         handled_message = await handle_message(message)
@@ -59,5 +60,10 @@ async def spam_identification(request: Request ,message: str = Form(...)):
         myprediction = model_import.predict(input)
         answer = myprediction[0]
     except Exception as e:
-        answer = "Something happened to the sever. Please try again"
-    return  templates.TemplateResponse('index.html',context = {'request': request,'content': message, 'result': answer},)
+        if message == None:
+            answer = "Please enter your content"
+            message = " "
+        else:
+            answer = "Something happened to the sever. Please try again"
+            message = " "
+    return templates.TemplateResponse('index.html',context = {'request': request,'content': message, 'result': answer},)
