@@ -7,6 +7,7 @@ from fileinput import filename
 import pickle
 import nltk
 import os
+import uvicorn
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -67,3 +68,6 @@ async def spam_identification(request: Request ,message: Optional[str] = Form(No
             answer = "Something happened to the sever. Please try again"
             message = " "
     return templates.TemplateResponse('index.html',context = {'request': request,'content': message, 'result': answer},)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv('APP_PORT')))
