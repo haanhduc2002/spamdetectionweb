@@ -42,15 +42,12 @@ async def handle_message(message):
   result = ' '.join([lemmatizer.lemmatize(w) for w in word_list])
   return result.lower() # Lower casing the processed message
 
-@app.get('/')
-def read_root():
-    return 'hello world' 
 
-@app.get('/form')
-async def hello(request: Request):
+@app.get('/')
+async def spam_content_form(request: Request):
     return templates.TemplateResponse('index.html',context = {'request': request,'content': "Please enter your email content", 'result': " "},)
 
-@app.post('/form')
+@app.post('/')
 async def spam_identification(request: Request ,message: Optional[str] = Form(None)):
     answer = ''
     try:

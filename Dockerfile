@@ -4,7 +4,6 @@ FROM python:3.10-slim
 # Warning: A port below 1024 has been exposed. This requires the image to run as a root user which is not a best practice.
 # For more information, please refer to https://aka.ms/vscode-docker-python-user-rights`
 EXPOSE 80
-EXPOSE 8000
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
